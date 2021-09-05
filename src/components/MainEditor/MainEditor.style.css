@@ -1,0 +1,18 @@
+.editor-root {
+}
+
+.editor-wrapper {
+	width: 100% !important;
+	/* display: block !important; */
+	margin-bottom: 25px !important;
+	/* height: 400px !important; */
+}
+.editor-editor {
+	padding: 5px !important;
+	height: 75% !important;
+	border-radius: 2px !important;
+	border-color: rgb(0, 47, 126) !important;
+}
+.editor-toolbar {
+    
+}

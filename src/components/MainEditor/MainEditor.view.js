@@ -1,45 +1,47 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import InputBase from "@material-ui/core/InputBase";
+import FormControl from "@material-ui/core/FormControl";
 import { EditorState, ContentState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./MainEditor.style.css";
 
-class ConvertToRawDraftContent extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			editorState: EditorState.createEmpty(),
-		};
-		this.onEditorStateChange = this.onEditorStateChange.bind(this);
-	}
+const useStyles = makeStyles((theme) => ({
+	titleBar: {
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "flex-start",
+		padding: theme.spacing(0, 1),
+		// necessary for content to be below app bar
+		...theme.mixins.toolbar,
+	},
+	titleInput: {
+		height: 30,
+	},
+}));
 
-	componentDidMount() {
-		const html = this.getHardcodedHtml();
-		const contentBlock = html;
-		// if (contentBlock) {
-		// 	const contentState = ContentState.createFromBlockArray(
-		// 		contentBlock.contentBlocks
-		// 	);
-		// 	const editorState = EditorState.createWithContent(contentState);
-		// 	this.setState({ editorState });
-		// }
-	}
+function ConvertToRawDraftContent() {
+	const classes = useStyles();
+	const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
-	getHardcodedHtml() {
-		const html = `<p></p>
-        <img src="https://www.dotemu.com/wp-content/uploads/2018/08/thumbsite1.png" alt="undefined" style="height: auto;width: auto"/>
-        <p></p>`;
-		return html;
-	}
-
-	onEditorStateChange(editorState) {
-		this.setState({ editorState });
-	}
-
-	render() {
-		const { editorState } = this.state;
-		return (
+	return (
+		<>
+			<div className={classes.titleBar}>
+				<FormControl fullWidth variant="outlined">
+					<InputBase
+						className={classes.titleInput}
+						InputProps={{
+							disableUnderline: true,
+						}}
+						value={null}
+						onChange={() => {}}
+						labelWidth={0}
+						placeholder="Untitled Note"
+					/>
+				</FormControl>
+			</div>
 			<div className="editor-root">
 				<Editor
 					editorState={editorState}
@@ -84,11 +86,11 @@ class ConvertToRawDraftContent extends Component {
 					wrapperClassName="editor-wrapper"
 					editorClassName="editor-editor"
 					placeholder="Type or paste your text here!"
-					onEditorStateChange={this.onEditorStateChange}
+					onEditorStateChange={setEditorState}
 				/>
 			</div>
-		);
-	}
+		</>
+	);
 }
 
 export default ConvertToRawDraftContent;

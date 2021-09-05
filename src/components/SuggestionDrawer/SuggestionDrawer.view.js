@@ -2,11 +2,8 @@ import React from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import NoSuggestion from '../../components/NoSuggestion';
 
 const drawerWidth = 300;
 
@@ -85,6 +82,7 @@ export default function SuggestionDrawer() {
                     All Suggestions!
 				</Typography>
 			</div>
+			<NoSuggestion/>
 		</Drawer>
 	);
 }

@@ -1,7 +1,7 @@
 import { Player } from "@lottiefiles/react-lottie-player";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import lamaYoga from '../../assets/lottie/lama-yoga.json';
+import lamaYoga from '../../assets/lottie/lame-yoga/75316-lama-yoga.json';
 
 const useStyles = makeStyles((theme) => ({
 	textWrapper: {

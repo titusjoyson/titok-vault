@@ -2,6 +2,9 @@ import React, { Component, useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import InputBase from "@material-ui/core/InputBase";
 import FormControl from "@material-ui/core/FormControl";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import CloseIcon from "@material-ui/icons/Close";
 import { EditorState, ContentState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 
@@ -16,6 +19,14 @@ const useStyles = makeStyles((theme) => ({
 		padding: theme.spacing(0, 1),
 		// necessary for content to be below app bar
 		...theme.mixins.toolbar,
+	},
+	iconLeftContainer: {
+		display: "flex",
+		paddingRight: "20px",
+	},
+	iconRightContainer: {
+		display: "flex",
+		paddingLeft: "20px",
 	},
 	titleInput: {
 		height: 30,
@@ -41,6 +52,14 @@ function ConvertToRawDraftContent() {
 						placeholder="Untitled Note"
 					/>
 				</FormControl>
+				<div className={classes.iconRightContainer}>
+					<IconButton aria-label="delete" className={classes.margin}>
+						<DeleteIcon fontSize="small" />
+					</IconButton>
+					<IconButton aria-label="delete" className={classes.margin}>
+						<CloseIcon fontSize="small" />
+					</IconButton>
+				</div>
 			</div>
 			<div className="editor-root">
 				<Editor

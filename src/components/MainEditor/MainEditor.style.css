@@ -4,16 +4,16 @@
 }
 .editor-wrapper {
 	width: 100% !important;
-	flex-direction: column;
-	display: flex;
-	
+	/* display: flex; flex-direction: column; */
 }
 .editor-editor {
 	padding: 5px !important;
 	border-radius: 2px !important;
 	border-color: rgb(0, 47, 126) !important;
-	height: calc(100vh - 64px - 52px) !important;
+	min-height: calc(100vh - 64px - 52px) !important;
+	max-height: calc(100vh - 64px - 52px) !important;
+	/* order: 1; */
 }
 .editor-toolbar {
-    
+    /* order: 2; */
 }

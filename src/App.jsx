@@ -12,19 +12,19 @@ import "./App.less";
 
 const { store, persistor } = getStore();
 let theme = createTheme({
-	overrides: {
-		MuiCssBaseline: {
-			"@global": {
-				"*": {
-					"scrollbar-width": "thin",
-				},
-				"*::-webkit-scrollbar": {
-					width: "4px",
-					height: "4px",
-				},
-			},
-		},
-	},
+	// overrides: {
+	// 	MuiCssBaseline: {
+	// 		"@global": {
+	// 			"*": {
+	// 				"scrollbar-width": "thin",
+	// 			},
+	// 			"*::-webkit-scrollbar": {
+	// 				width: "4px",
+	// 				height: "4px",
+	// 			},
+	// 		},
+	// 	},
+	// },
 });
 theme = responsiveFontSizes(theme);
 

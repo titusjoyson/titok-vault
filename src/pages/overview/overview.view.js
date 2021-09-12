@@ -6,30 +6,30 @@ import ItemList from "../../components/ItemList";
 import MainEditor from "../../components/MainEditor";
 import MainDrawer from "../../components/Drawer";
 import SuggestionDrawer from "../../components/SuggestionDrawer";
-import OverviewHome from '../../components/OverviewHome';
+import OverviewHome from "../../components/OverviewHome";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
 		display: "flex",
 	},
 	content: {
-		flexGrow: 1,
+		display: "flex",
 		flex: 1,
-		height: "100vh",
+		flexDirection: "column",
 	},
 }));
 
 export default function MiniDrawer() {
 	const classes = useStyles();
-	const [ selected, setSelected ] = useState(false);
+	const [selected, setSelected] = useState(true);
 
 	return (
 		<div className={classes.root}>
 			<CssBaseline />
 			<MainDrawer />
 			<ItemList />
-			<Container>
-				{selected ? <MainEditor /> : <OverviewHome/>}
+			<Container className={classes.content}>
+				{selected ? <MainEditor /> : <OverviewHome />}
 			</Container>
 			<SuggestionDrawer />
 		</div>

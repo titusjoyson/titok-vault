@@ -1,17 +1,18 @@
 .editor-root {
+	display: "flex";
+	flex: 1;
 }
-
 .editor-wrapper {
 	width: 100% !important;
-	/* display: block !important; */
-	margin-bottom: 25px !important;
-	/* height: 400px !important; */
+	flex-direction: column;
+	display: flex;
+	
 }
 .editor-editor {
 	padding: 5px !important;
-	height: 75% !important;
 	border-radius: 2px !important;
 	border-color: rgb(0, 47, 126) !important;
+	height: calc(100vh - 64px - 52px) !important;
 }
 .editor-toolbar {
     

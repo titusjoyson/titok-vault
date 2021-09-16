@@ -33,7 +33,10 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function ConvertToRawDraftContent() {
+function ConvertToRawDraftContent({
+	onNoteDelete = () => null,
+	onNoteClose = () => null,
+}) {
 	const classes = useStyles();
 	const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
@@ -53,10 +56,18 @@ function ConvertToRawDraftContent() {
 					/>
 				</FormControl>
 				<div className={classes.iconRightContainer}>
-					<IconButton aria-label="delete" className={classes.margin}>
+					<IconButton
+						aria-label="delete"
+						className={classes.margin}
+						onClick={(e) => onNoteDelete(e)}
+					>
 						<DeleteIcon fontSize="small" />
 					</IconButton>
-					<IconButton aria-label="delete" className={classes.margin}>
+					<IconButton
+						aria-label="close"
+						className={classes.margin}
+						onClick={(e) => onNoteClose(e)}
+					>
 						<CloseIcon fontSize="small" />
 					</IconButton>
 				</div>

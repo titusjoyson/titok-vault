@@ -2,9 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
 import InsertDriveFileOutlinedIcon from "@material-ui/icons/InsertDriveFileOutlined";
 import Typography from "@material-ui/core/Typography";
 
@@ -28,7 +26,27 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function OverviewHome() {
+function AddCard({ onClick=()=>null }) {
+	const classes = useStyles();
+
+	return (
+		<Card className={classes.root} onClick={(e)=>onClick(e)}>
+			<CardActionArea className={classes.card}>
+				<InsertDriveFileOutlinedIcon
+					fontSize="large"
+					color="secondary"
+				/>
+				<CardContent>
+					<Typography gutterBottom variant="body1" component="h6">
+						Add Note
+					</Typography>
+				</CardContent>
+			</CardActionArea>
+		</Card>
+	);
+}
+
+export default function OverviewHome({ onNoteAdd=()=>null }) {
 	const classes = useStyles();
 
 	return (
@@ -46,20 +64,10 @@ export default function OverviewHome() {
 						have to remember them.
 					</Typography>
 				</CardContent>
-				{/* <CardActions>
-					<Button size="small">Learn More</Button>
-				</CardActions> */}
 			</Card>
-			<Card className={classes.root}>
-				<CardActionArea className={classes.card}>
-					<InsertDriveFileOutlinedIcon fontSize="large" color="secondary" />
-					<CardContent>
-						<Typography gutterBottom variant="body1" component="h6">
-							Add Note
-						</Typography>
-					</CardContent>
-				</CardActionArea>
-			</Card>
+			<AddCard 
+				onClick={onNoteAdd}
+			/>
 		</>
 	);
 }

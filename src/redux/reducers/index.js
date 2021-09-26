@@ -1,7 +1,9 @@
 import { combineReducers } from 'redux';
-import secretsReducer from './secretsReducer';
+import appReducer from './appReducer';
+import settingsReducer from './settingsReducer';
 
 
 export default combineReducers({
-    "secrets": secretsReducer
+    "app": appReducer,
+    "settings": settingsReducer,
 })

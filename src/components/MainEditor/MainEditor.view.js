@@ -5,13 +5,9 @@ import FormControl from "@material-ui/core/FormControl";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CloseIcon from "@material-ui/icons/Close";
-import {
-	EditorState,
-	ContentState,
-	convertToRaw,
-	convertFromRaw,
-} from "draft-js";
+import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
+import { usePrevious } from "../../utils/hooks";
 import db from "../../models/db";
 import DeleteAlert from "../../components/Alert/DeleteAlert";
 
@@ -41,85 +37,64 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ConvertToRawDraftContent({
-	selectedNoteId,
+	noteId,
+	title,
+	content,
 	onNoteClose = () => null,
+	onNoteDelete = () => null,
+	onNoteChange = () => null,
 }) {
 	const classes = useStyles();
-	const [note, setNote] = useState({});
 	const [editorState, setEditorState] = useState(EditorState.createEmpty());
 	const [deleteAlert, setDeleteAlert] = useState(false);
+	const [mounted, setMounted] = useState(false);
 
 	const setEmptyData = () => {
-		setNote({});
 		setEditorState(EditorState.createEmpty());
 	};
 
-	const setNoteData = (noteId) => {
-		db.getNote(noteId)
-			.then((note) => {
-				setNote(note);
-				try {
-					const contentJson = JSON.parse(note.content);
-					const contentState = convertFromRaw(contentJson);
-					const editorState =
-						EditorState.createWithContent(contentState);
-					setEditorState(editorState);
-				} catch (e) {
-					console.error(e);
-				}
-			})
-			.catch((e) => {
-				console.error(e);
-				setEmptyData();
-			});
+	const setEditorStateFromNote = () => {
+		try {
+			const contentJson = JSON.parse(content);
+			const contentState = convertFromRaw(contentJson);
+			const editorState = EditorState.createWithContent(contentState);
+			setEditorState(editorState);
+		} catch (e) {
+			console.error(e);
+		}
 	};
 
 	useEffect(() => {
-		if (typeof selectedNoteId == "number" && note.id !== selectedNoteId) {
-			setNoteData(selectedNoteId);
-		} else {
-			setEmptyData();
-		}
-	}, [selectedNoteId]);
+		setMounted(true);
+	}, []);
 
-	const deleteNote = (noteId) => {
-		db.deleteNote(noteId)
-			.then((d) => {
+	useEffect(() => {
+		if (mounted) {
+			if (typeof noteId == "number") {
+				setEditorStateFromNote();
+			} else {
 				setEmptyData();
-				onNoteClose();
-			})
-			.catch((e) => {
-				console.error(e);
-			});
-	};
+			}
+		}
+	}, [noteId, mounted]);
 
-	const onNoteDelete = (action) => {
+	const onDeleteAlertAction = (action) => {
 		if (action === true) {
-			deleteNote(note.id);
+			onNoteDelete(noteId);
 			setDeleteAlert(true);
 		} else {
 			setDeleteAlert(false);
 		}
 	};
 
-	const mutateNote = (key, value) => {
-		// if node id exist update note
-		if (typeof note.id == "number") {
-			let updatedNote = { ...note };
-			updatedNote[key] = value;
-			updatedNote["updatedAt"] = new Date();
-			db.updateNote(updatedNote.id, updatedNote);
-			setNote(updatedNote);
-			// if node id does exist create note
-		}
-	};
+	useEffect(() => {}, [editorState]);
 
 	const onEditorStateChange = (key, editorState) => {
+		setEditorState(editorState);
 		var contentState = editorState.getCurrentContent();
 		const rawValue = convertToRaw(contentState);
 		const content = JSON.stringify(rawValue);
-		mutateNote(key, content);
-		setEditorState(editorState);
+		onNoteChange("content", content);
 	};
 
 	return (
@@ -131,8 +106,8 @@ function ConvertToRawDraftContent({
 						InputProps={{
 							disableUnderline: true,
 						}}
-						value={note.title}
-						onChange={(e) => mutateNote("title", e.target.value)}
+						value={title}
+						onChange={(e) => onNoteChange("title", e.target.value)}
 						placeholder="Untitled Note"
 					/>
 				</FormControl>
@@ -157,8 +132,16 @@ function ConvertToRawDraftContent({
 				<Editor
 					initialEditorState={editorState}
 					editorState={editorState}
+					stripPastedStyles
 					toolbar={{
-						options: ["inline", "blockType", "list", "link"],
+						options: [
+							"inline",
+							"fontFamily",
+							"fontSize",
+							"blockType",
+							"list",
+							"link",
+						],
 						inline: {
 							inDropdown: false,
 							className: undefined,
@@ -168,7 +151,7 @@ function ConvertToRawDraftContent({
 						},
 						blockType: {
 							inDropdown: false,
-							options: ["H1", "H2", "Code"],
+							options: ["H3", "H4", "Code"],
 							className: undefined,
 							component: undefined,
 							dropdownClassName: undefined,
@@ -206,7 +189,7 @@ function ConvertToRawDraftContent({
 			<DeleteAlert
 				open={deleteAlert}
 				onClose={() => setDeleteAlert(false)}
-				onAction={(state) => onNoteDelete(state)}
+				onAction={(state) => onDeleteAlertAction(state)}
 			/>
 		</>
 	);

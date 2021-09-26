@@ -1,0 +1,1 @@
+export const SET_SELECTED_NOTE = "SET_SELECTED_NOTE";

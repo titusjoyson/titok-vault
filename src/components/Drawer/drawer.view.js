@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -10,10 +10,20 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
+import NotesIcon from "@material-ui/icons/Notes";
+import DeleteIcon from "@material-ui/icons/Delete";
+import SettingsIcon from "@material-ui/icons/Settings";
+import InfoOutlined from "@material-ui/icons/InfoOutlined";
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 const drawerWidth = 240;
+const iconMap = {
+	Notes: NotesIcon,
+	Trash: DeleteIcon,
+	Settings: SettingsIcon,
+	About: InfoOutlined,
+	Help: HelpOutlineIcon,
+};
 
 const useStyles = makeStyles((theme) => ({
 	drawer: {
@@ -83,25 +93,33 @@ export default function MainDrawer() {
 			</div>
 			<Divider />
 			<List>
-				{["All Items", "Trash", "Settings"].map((text, index) => (
-					<ListItem button key={text}>
-						<ListItemIcon>
-							{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-						</ListItemIcon>
-						<ListItemText primary={text} />
-					</ListItem>
-				))}
+				{["Notes", "Trash", "Settings"].map((text, index) => {
+					const Icon = iconMap[text];
+
+					return (
+						<ListItem button key={text}>
+							<ListItemIcon>
+								<Icon />
+							</ListItemIcon>
+							<ListItemText primary={text} />
+						</ListItem>
+					);
+				})}
 			</List>
 			<Divider />
 			<List>
-				{["About", "Help"].map((text, index) => (
-					<ListItem button key={text}>
-						<ListItemIcon>
-							{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-						</ListItemIcon>
-						<ListItemText primary={text} />
-					</ListItem>
-				))}
+				{["About", "Help"].map((text, index) => {
+					const Icon = iconMap[text];
+
+					return (
+						<ListItem button key={text}>
+							<ListItemIcon>
+								<Icon />
+							</ListItemIcon>
+							<ListItemText primary={text} />
+						</ListItem>
+					);
+				})}
 			</List>
 		</Drawer>
 	);

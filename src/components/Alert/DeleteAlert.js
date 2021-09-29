@@ -19,7 +19,14 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function DeleteAlert({ open, onAction = () => null, onClose = () => null }) {
+export default function DeleteAlert({
+	title,
+	content,
+	showDontAskMe = true,
+	open,
+	onAction = () => null,
+	onClose = () => null,
+}) {
 	const classes = useStyles();
 	const theme = useTheme();
 	const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -31,30 +38,29 @@ export default function DeleteAlert({ open, onAction = () => null, onClose = () 
 			onClose={onClose}
 			aria-labelledby="responsive-dialog-title"
 		>
-			<DialogTitle id="responsive-dialog-title">
-				{"Are you sure you want to move this note to the Trash?"}
-			</DialogTitle>
+			<DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
 			<DialogContent>
-				<DialogContentText>
-					This record will be moved to trash folder immediately, You
-					can undo this actions any time from trash folder.
-				</DialogContentText>
-				<FormGroup>
-					<FormControlLabel
-						control={<Checkbox size="small" />}
-						label={
-							<Typography className={classes.formControlLabel}>
-								Don't ask me again
-							</Typography>
-						}
-					/>
-				</FormGroup>
+				<DialogContentText>{content}</DialogContentText>
+				{showDontAskMe && (
+					<FormGroup>
+						<FormControlLabel
+							control={<Checkbox size="small" />}
+							label={
+								<Typography
+									className={classes.formControlLabel}
+								>
+									Don't ask me again
+								</Typography>
+							}
+						/>
+					</FormGroup>
+				)}
 			</DialogContent>
 			<DialogActions>
-				<Button autoFocus onClick={()=>onAction(false)}>
+				<Button autoFocus onClick={() => onAction(false)}>
 					Disagree
 				</Button>
-				<Button onClick={()=>onAction(true)} autoFocus>
+				<Button onClick={() => onAction(true)} autoFocus>
 					Agree
 				</Button>
 			</DialogActions>

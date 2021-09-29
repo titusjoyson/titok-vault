@@ -4267,10 +4267,15 @@ detect-port-alt@1.1.6:
     address "^1.0.1"
     debug "^2.6.0"
 
-dexie@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.0.3.tgz#ede63849dfe5f07e13e99bb72a040e8ac1d29dab"
-  integrity sha512-BSFhGpngnCl1DOr+8YNwBDobRMH0ziJs2vts69VilwetHYOtEDcLqo7d/XiIphM0tJZ2rPPyAGd31lgH2Ln3nw==
+dexie-react-hooks@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/dexie-react-hooks/-/dexie-react-hooks-1.0.7.tgz#50316a7829a6dfa013b8471f66b010cc77f00d3e"
+  integrity sha512-hqXGFbfgu1rdfcGHQUPwW2G0iWyupoNWnk3ODvqr+HdZt2ip3y1e/dcWIOsEnlUWWCWk6a3+ok0fvECU05eE2A==
+
+dexie@^v3.2.0-beta.1:
+  version "3.2.0-rc.1"
+  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.2.0-rc.1.tgz#e7b0cdecbb192cdccbcdcb6d1cb0db318eeb72ac"
+  integrity sha512-G8KmAt27MsD8Cdh3lzYUSU0dunBeUPHHsWsG0Ax0BHFozuSeHxMb+D5hnucG34spwAj7qXkupnsF7SDudjrBhw==
 
 diff-sequences@^26.6.2:
   version "26.6.2"

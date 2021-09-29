@@ -1,5 +1,5 @@
-import React, { Component, useState, useEffect } from "react";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import React, { useState, useEffect } from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import InputBase from "@material-ui/core/InputBase";
 import FormControl from "@material-ui/core/FormControl";
 import IconButton from "@material-ui/core/IconButton";
@@ -7,9 +7,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import CloseIcon from "@material-ui/icons/Close";
 import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import { usePrevious } from "../../utils/hooks";
-import db from "../../models/db";
 import DeleteAlert from "../../components/Alert/DeleteAlert";
+import { AllTabs } from "../../com/const";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./MainEditor.style.css";
@@ -40,13 +39,14 @@ function ConvertToRawDraftContent({
 	noteId,
 	title,
 	content,
+	tags,
 	onNoteClose = () => null,
 	onNoteDelete = () => null,
 	onNoteChange = () => null,
 }) {
 	const classes = useStyles();
 	const [editorState, setEditorState] = useState(EditorState.createEmpty());
-	const [deleteAlert, setDeleteAlert] = useState(false);
+	const [alert, setAlert] = useState({});
 	const [mounted, setMounted] = useState(false);
 
 	const setEmptyData = () => {
@@ -81,17 +81,49 @@ function ConvertToRawDraftContent({
 	const onDeleteAlertAction = (action) => {
 		if (action === true) {
 			onNoteDelete(noteId);
-			setDeleteAlert(true);
-		} else {
-			setDeleteAlert(false);
 		}
+		hideDeleteAlert();
 	};
 
-	useEffect(() => {}, [editorState]);
+	const showDeleteAlert = () => {
+		let alert = {
+			title: "",
+			content: "",
+			showDontAskMe: false,
+			open: false,
+		};
+
+		if (tags.indexOf(AllTabs.TRASH) > -1) {
+			alert.title =
+				"Are you sure you want to move this note to the Trash?";
+			alert.content = `
+					This record will be moved to trash folder immediately, You
+					can undo this actions any time from trash folder.
+					`;
+			alert.showDontAskMe = false;
+		} else {
+			alert.title =
+				"Are you sure you want to move this note to the Trash?";
+			alert.content = `
+					This record will be moved to trash folder immediately, You
+					can undo this actions any time from trash folder.
+					`;
+			alert.showDontAskMe = false;
+		}
+		alert.open = true;
+		setAlert(alert);
+	};
+
+	const hideDeleteAlert = () => {
+		setAlert({
+			...alert,
+			open: false,
+		});
+	};
 
 	const onEditorStateChange = (key, editorState) => {
 		setEditorState(editorState);
-		var contentState = editorState.getCurrentContent();
+		const contentState = editorState.getCurrentContent();
 		const rawValue = convertToRaw(contentState);
 		const content = JSON.stringify(rawValue);
 		onNoteChange("content", content);
@@ -115,7 +147,7 @@ function ConvertToRawDraftContent({
 					<IconButton
 						aria-label="delete"
 						className={classes.margin}
-						onClick={(e) => setDeleteAlert(true)}
+						onClick={(e) => showDeleteAlert()}
 					>
 						<DeleteIcon fontSize="small" />
 					</IconButton>
@@ -187,8 +219,11 @@ function ConvertToRawDraftContent({
 				/>
 			</div>
 			<DeleteAlert
-				open={deleteAlert}
-				onClose={() => setDeleteAlert(false)}
+				open={alert.open}
+				title={alert.title}
+				content={alert.content}
+				showDontAskMe={alert.showDontAskMe}
+				onClose={() => hideDeleteAlert()}
 				onAction={(state) => onDeleteAlertAction(state)}
 			/>
 		</>

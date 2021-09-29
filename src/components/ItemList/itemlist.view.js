@@ -1,30 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { useWindowSize } from "../../utils/hooks";
 import { makeStyles } from "@material-ui/core/styles";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import ItemSearch from "../../components/ItemSearch";
 import { FixedSizeList } from "react-window";
+import { useSelector } from "react-redux";
+import { useLiveQuery } from "dexie-react-hooks";
+import { v4 as uuidv4 } from "uuid";
+import ItemSearch from "../../components/ItemSearch";
+import { useWindowSize } from "../../utils/hooks";
 import db from "../../models/db";
+import { AllTabs } from "../../com/const";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
 		backgroundColor: theme.palette.background.paper,
 		width: 250,
 	},
-	search: {
-		width: 230,
-		margin: theme.spacing(1),
+	listWrapper: {
+		paddingTop: theme.spacing(0.5),
+		paddingBottom: theme.spacing(1),
 	},
 }));
 
 export default function ItemList({ onSelect = () => null }) {
 	const [notes, setNotes] = useState([]);
+	const [updateId, setUpdateId] = useState([]);
 	const size = useWindowSize();
 	const classes = useStyles();
+	const { selectedNoteId, activeMainTab } = useSelector((state) => state.app);
 
-	const updateAllNotes = () => {
-		db.getAllNote().then((notes) => {
+	const updateAllNotes = (activeMainTab) => {
+		let getNotesFunction = "getAllNotes";
+		if (activeMainTab === AllTabs.TRASH) {
+			getNotesFunction = "getAllDeletedNotes";
+		}
+		db[getNotesFunction]().then((notes) => {
 			let allNotes = [];
 			notes
 				.each((note) => {
@@ -34,36 +44,29 @@ export default function ItemList({ onSelect = () => null }) {
 					setNotes(allNotes);
 				})
 				.catch((e) => {
-					console.error(e);
 					setNotes([]);
+					console.error(e);
 				});
 		});
 	};
 
-	useEffect(() => {
-		updateAllNotes();
-		
-		db.notes.hook(
-			"updating",
-			function (modifications, primKey, obj, transaction) {
-				updateAllNotes();
-			}
+	useLiveQuery(() => {
+		db.notes.hook("creating", (primKey, obj, transaction) =>
+			setUpdateId(uuidv4())
 		);
 
-		db.notes.hook(
-			"creating",
-			function (primKey, obj, transaction) {
-				updateAllNotes();
-			}
+		db.notes.hook("updating", (modifications, primKey, obj, transaction) =>
+			setUpdateId(uuidv4())
 		);
 
-		db.notes.hook(
-			"deleting",
-			function (primKey, obj, transaction) {
-				updateAllNotes();
-			}
+		db.notes.hook("deleting", (primKey, obj, transaction) =>
+			setUpdateId(uuidv4())
 		);
 	}, []);
+
+	useEffect(() => {
+		updateAllNotes(activeMainTab);
+	}, [activeMainTab, updateId]);
 
 	if (!size.height) return <></>;
 
@@ -74,6 +77,7 @@ export default function ItemList({ onSelect = () => null }) {
 		return (
 			<ListItem
 				button
+				selected={selectedNoteId === note.id}
 				style={style}
 				key={index}
 				onClick={() => onSelect(note.id)}
@@ -86,14 +90,16 @@ export default function ItemList({ onSelect = () => null }) {
 	return (
 		<div className={classes.root}>
 			<ItemSearch />
-			<FixedSizeList
-				height={size.height - 65}
-				width={250}
-				itemSize={46}
-				itemCount={notes.length}
-			>
-				{renderRow}
-			</FixedSizeList>
+			<div className={classes.listWrapper}>
+				<FixedSizeList
+					height={size.height - 65}
+					width={250}
+					itemSize={46}
+					itemCount={notes.length}
+				>
+					{renderRow}
+				</FixedSizeList>
+			</div>
 		</div>
 	);
 }

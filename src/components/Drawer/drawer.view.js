@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import clsx from "clsx";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
@@ -14,7 +14,8 @@ import NotesIcon from "@material-ui/icons/Notes";
 import DeleteIcon from "@material-ui/icons/Delete";
 import SettingsIcon from "@material-ui/icons/Settings";
 import InfoOutlined from "@material-ui/icons/InfoOutlined";
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+import { AllTabs } from "../../com/const";
 
 const drawerWidth = 240;
 const iconMap = {
@@ -64,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function MainDrawer() {
+export default function MainDrawer({ onSelect = () => null }) {
 	const classes = useStyles();
 	const [open, setOpen] = React.useState(false);
 
@@ -93,26 +94,35 @@ export default function MainDrawer() {
 			</div>
 			<Divider />
 			<List>
-				{["Notes", "Trash", "Settings"].map((text, index) => {
-					const Icon = iconMap[text];
+				{[AllTabs.NOTES, AllTabs.TRASH, AllTabs.SETTINGS].map(
+					(text, index) => {
+						const Icon = iconMap[text];
 
-					return (
-						<ListItem button key={text}>
-							<ListItemIcon>
-								<Icon />
-							</ListItemIcon>
-							<ListItemText primary={text} />
-						</ListItem>
-					);
-				})}
+						return (
+							<ListItem
+								button
+								key={text}
+								onClick={() => onSelect(text)}
+							>
+								<ListItemIcon>
+									<Icon />
+								</ListItemIcon>
+								<ListItemText primary={text} />
+							</ListItem>
+						);
+					}
+				)}
 			</List>
 			<Divider />
 			<List>
-				{["About", "Help"].map((text, index) => {
+				{[AllTabs.ABOUT, AllTabs.HELP].map((text, index) => {
 					const Icon = iconMap[text];
 
 					return (
-						<ListItem button key={text}>
+						<ListItem
+							button
+							key={text}
+						>
 							<ListItemIcon>
 								<Icon />
 							</ListItemIcon>

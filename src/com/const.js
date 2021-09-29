@@ -1,9 +1,11 @@
-export const ViewModes = {
-    VIEW: "VIEW",
-    EDIT: "EDIT"
+const AllTabs = {
+    NOTES: "Notes", 
+    TRASH: "Trash", 
+    SETTINGS: "Settings",
+    ABOUT: "About", 
+    HELP: "Help",
 } 
 
-export const InputTypes = {
-    PASSWORD: "password",
-    TEXT: "text"
-}
+AllTabs['MAIN_NAV_ITEMS'] = [AllTabs.NOTES, AllTabs.TRASH]
+
+export { AllTabs };

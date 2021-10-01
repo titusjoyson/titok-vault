@@ -8,11 +8,15 @@ import MainEditor from "../../components/MainEditor";
 import MainDrawer from "../../components/Drawer";
 import SuggestionDrawer from "../../components/SuggestionDrawer";
 import OverviewHome from "../../components/OverviewHome";
-import db from "../../models/db";
+import SettingsModel from "../../components/Settings";
+import DeleteAlert from "../../components/Alert/DeleteAlert";
 // Redux
 import { useSelector, useDispatch } from "react-redux";
 import { setSelectedNote, setMainTab } from "../../redux/actions/app";
+import { setDeleteConfirmation } from "../../redux/actions/settings";
 import { AllTabs } from "../../com/const";
+// Other
+import db from "../../models/db";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -28,9 +32,12 @@ const useStyles = makeStyles((theme) => ({
 export default function MiniDrawer() {
 	const classes = useStyles();
 	const dispatch = useDispatch();
-	const { selectedNoteId, activeMainTab } = useSelector((state) => state.app);
+	const { selectedNoteId } = useSelector((state) => state.app);
+	const { DELETE_CONFIRMATION } = useSelector((state) => state.settings);
 	const [mounted, setMounted] = useState(false);
+	const [settingsOpen, setSettingsOpen] = useState(false);
 	const [note, setNote] = useState({});
+	const [deleteAlert, setDeleteAlert] = useState({});
 
 	const setEmptyData = () => {
 		dispatch(setSelectedNote(null));
@@ -64,7 +71,7 @@ export default function MiniDrawer() {
 
 	const deleteNote = (noteId) => {
 		let deleteFunction = "deleteNote";
-		if (activeMainTab === AllTabs.TRASH) {
+		if (note.tags.indexOf(db.TAG_DELETED) > -1) {
 			deleteFunction = "hardDeleteNote";
 		}
 		if (deleteFunction) {
@@ -109,6 +116,63 @@ export default function MiniDrawer() {
 	const onTabSwitch = (tab) => {
 		if (AllTabs.MAIN_NAV_ITEMS.indexOf(tab) > -1) {
 			dispatch(setMainTab(tab));
+		} else if (AllTabs.SETTINGS === tab) {
+			setSettingsOpen(true);
+		}
+	};
+
+	const onDeleteAlertAction = (action) => {
+		if (action === true) {
+			deleteNote(note.id);
+		}
+		hideDeleteAlert();
+	};
+
+	const showDeleteAlert = () => {
+		let deleteAlert = {
+			title: "",
+			content: "",
+			showDontAskMe: false,
+			open: false,
+		};
+
+		if (note.tags.indexOf(db.TAG_DELETED) > -1) {
+			deleteAlert.title =
+				"Are you sure you want to move this note to the Trash?";
+			deleteAlert.content = `
+					This record will be moved to trash folder immediately, You
+					can undo this actions any time from trash folder.
+					`;
+			deleteAlert.showDontAskMe = false;
+		} else if (DELETE_CONFIRMATION === true) {
+			deleteAlert.title =
+				"Are you sure you want to move this note to the Trash?";
+			deleteAlert.content = `
+					This record will be moved to trash folder immediately, You
+					can undo this actions any time from trash folder.
+					`;
+			deleteAlert.showDontAskMe = true;
+		}
+		deleteAlert.open = true;
+		setDeleteAlert(deleteAlert);
+	};
+
+	const hideDeleteAlert = () => {
+		setDeleteAlert({
+			...deleteAlert,
+			open: false,
+		});
+	};
+
+	const onDeleteClick = () => {
+		if (note.tags.indexOf(db.TAG_DELETED) > -1) {
+			// when deleted tag is present in nots
+			showDeleteAlert();
+		} else if (DELETE_CONFIRMATION === false) {
+			// when global delete confirmation settings set to false
+			onDeleteAlertAction(true);
+		} else {
+			showDeleteAlert();
 		}
 	};
 
@@ -126,8 +190,9 @@ export default function MiniDrawer() {
 						title={note.title}
 						content={note.content}
 						tags={note.tags}
+						showDeleteConfirmation={DELETE_CONFIRMATION}
 						onNoteClose={() => setEmptyData()}
-						onNoteDelete={(noteId) => deleteNote(noteId)}
+						onNoteDelete={() => onDeleteClick()}
 						onNoteChange={(key, value) => mutateNote(key, value)}
 					/>
 				) : mounted ? (
@@ -135,6 +200,21 @@ export default function MiniDrawer() {
 				) : null}
 			</Container>
 			<SuggestionDrawer />
+			<DeleteAlert
+				open={deleteAlert.open}
+				title={deleteAlert.title}
+				content={deleteAlert.content}
+				showDontAskMe={deleteAlert.showDontAskMe}
+				onClose={() => hideDeleteAlert()}
+				onAction={(state) => onDeleteAlertAction(state)}
+				onDontAskMeChange={(state) =>
+					dispatch(setDeleteConfirmation(!DELETE_CONFIRMATION))
+				}
+			/>
+			<SettingsModel
+				open={settingsOpen}
+				onClose={() => setSettingsOpen(false)}
+			/>
 		</div>
 	);
 }

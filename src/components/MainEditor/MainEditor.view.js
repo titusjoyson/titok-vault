@@ -7,8 +7,6 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import CloseIcon from "@material-ui/icons/Close";
 import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import DeleteAlert from "../../components/Alert/DeleteAlert";
-import { AllTabs } from "../../com/const";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./MainEditor.style.css";
@@ -39,14 +37,12 @@ function ConvertToRawDraftContent({
 	noteId,
 	title,
 	content,
-	tags,
 	onNoteClose = () => null,
 	onNoteDelete = () => null,
 	onNoteChange = () => null,
 }) {
 	const classes = useStyles();
 	const [editorState, setEditorState] = useState(EditorState.createEmpty());
-	const [alert, setAlert] = useState({});
 	const [mounted, setMounted] = useState(false);
 
 	const setEmptyData = () => {
@@ -78,49 +74,6 @@ function ConvertToRawDraftContent({
 		}
 	}, [noteId, mounted]);
 
-	const onDeleteAlertAction = (action) => {
-		if (action === true) {
-			onNoteDelete(noteId);
-		}
-		hideDeleteAlert();
-	};
-
-	const showDeleteAlert = () => {
-		let alert = {
-			title: "",
-			content: "",
-			showDontAskMe: false,
-			open: false,
-		};
-
-		if (tags.indexOf(AllTabs.TRASH) > -1) {
-			alert.title =
-				"Are you sure you want to move this note to the Trash?";
-			alert.content = `
-					This record will be moved to trash folder immediately, You
-					can undo this actions any time from trash folder.
-					`;
-			alert.showDontAskMe = false;
-		} else {
-			alert.title =
-				"Are you sure you want to move this note to the Trash?";
-			alert.content = `
-					This record will be moved to trash folder immediately, You
-					can undo this actions any time from trash folder.
-					`;
-			alert.showDontAskMe = false;
-		}
-		alert.open = true;
-		setAlert(alert);
-	};
-
-	const hideDeleteAlert = () => {
-		setAlert({
-			...alert,
-			open: false,
-		});
-	};
-
 	const onEditorStateChange = (key, editorState) => {
 		setEditorState(editorState);
 		const contentState = editorState.getCurrentContent();
@@ -147,7 +100,7 @@ function ConvertToRawDraftContent({
 					<IconButton
 						aria-label="delete"
 						className={classes.margin}
-						onClick={(e) => showDeleteAlert()}
+						onClick={(e) => onNoteDelete()}
 					>
 						<DeleteIcon fontSize="small" />
 					</IconButton>
@@ -218,14 +171,6 @@ function ConvertToRawDraftContent({
 					}
 				/>
 			</div>
-			<DeleteAlert
-				open={alert.open}
-				title={alert.title}
-				content={alert.content}
-				showDontAskMe={alert.showDontAskMe}
-				onClose={() => hideDeleteAlert()}
-				onAction={(state) => onDeleteAlertAction(state)}
-			/>
 		</>
 	);
 }

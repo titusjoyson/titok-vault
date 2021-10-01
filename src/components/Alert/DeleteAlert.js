@@ -26,6 +26,7 @@ export default function DeleteAlert({
 	open,
 	onAction = () => null,
 	onClose = () => null,
+	onDontAskMeChange = () => null,
 }) {
 	const classes = useStyles();
 	const theme = useTheme();
@@ -44,7 +45,7 @@ export default function DeleteAlert({
 				{showDontAskMe && (
 					<FormGroup>
 						<FormControlLabel
-							control={<Checkbox size="small" />}
+							control={<Checkbox size="small" onChange={(e)=>onDontAskMeChange(e.target.checked)} />}
 							label={
 								<Typography
 									className={classes.formControlLabel}

@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function ItemSearch() {
+export default function ItemSearch({ onChange=()=>null }) {
 	const classes = useStyles();
 	const { activeMainTab } = useSelector((state) => state.app);
 
@@ -28,6 +28,7 @@ export default function ItemSearch() {
 				className={classes.input}
 				placeholder={`Search in ${activeMainTab}`}
 				inputProps={{ "aria-label": "Search Notes" }}
+				onChange={(e)=>onChange(e.target.value)}
 			/>
 		</Paper>
 	);

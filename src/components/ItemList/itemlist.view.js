@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ItemList({ onSelect = () => null }) {
 	const [notes, setNotes] = useState([]);
 	const [updateId, setUpdateId] = useState([]);
+	const [searchString, setSearchString] = useState("");
 	const size = useWindowSize();
 	const classes = useStyles();
 	const { selectedNoteId, activeMainTab } = useSelector((state) => state.app);
@@ -87,15 +88,22 @@ export default function ItemList({ onSelect = () => null }) {
 		);
 	};
 
+	let displayNotes = [...notes];
+	if (searchString) {
+		displayNotes = displayNotes.filter((x) =>
+			x.title.toLowerCase().includes(searchString.toLowerCase())
+		);
+	}
+
 	return (
 		<div className={classes.root}>
-			<ItemSearch />
+			<ItemSearch onChange={(value) => setSearchString(value)} />
 			<div className={classes.listWrapper}>
 				<FixedSizeList
 					height={size.height - 65}
 					width={250}
 					itemSize={46}
-					itemCount={notes.length}
+					itemCount={displayNotes.length}
 				>
 					{renderRow}
 				</FixedSizeList>

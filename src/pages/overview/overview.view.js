@@ -138,10 +138,10 @@ export default function MiniDrawer() {
 
 		if (note.tags.indexOf(db.TAG_DELETED) > -1) {
 			deleteAlert.title =
-				"Are you sure you want to move this note to the Trash?";
+				"Are you sure you want to permanently delete this item?";
 			deleteAlert.content = `
-					This record will be moved to trash folder immediately, You
-					can undo this actions any time from trash folder.
+					This record will be deleted permanently, And
+					cannot be recovered.
 					`;
 			deleteAlert.showDontAskMe = false;
 		} else if (DELETE_CONFIRMATION === true) {

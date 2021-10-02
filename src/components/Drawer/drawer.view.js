@@ -121,6 +121,7 @@ export default function MainDrawer({ onSelect = () => null }) {
 					return (
 						<ListItem
 							button
+							disabled
 							key={text}
 						>
 							<ListItemIcon>

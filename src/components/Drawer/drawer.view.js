@@ -15,6 +15,11 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import SettingsIcon from "@material-ui/icons/Settings";
 import InfoOutlined from "@material-ui/icons/InfoOutlined";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+import Avatar from "@material-ui/core/Avatar";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import { useSelector, useDispatch } from "react-redux";
+import { resetAccount } from "../../redux/actions/account";
 import { AllTabs } from "../../com/const";
 
 const drawerWidth = 240;
@@ -63,10 +68,87 @@ const useStyles = makeStyles((theme) => ({
 		flex: 1,
 		height: "100vh",
 	},
+	avatar: {
+		width: theme.spacing(3),
+		height: theme.spacing(3),
+	},
+	flexUp: {
+		display: "flex",
+		flex: 1,
+	},
 }));
+
+function AccouontItem({ user }) {
+	const classes = useStyles();
+	const dispatch = useDispatch();
+	const [anchorEl, setAnchorEl] = React.useState(null);
+
+	const handleClick = (event) => {
+		setAnchorEl(event.currentTarget);
+	};
+
+	const handleClose = () => {
+		setAnchorEl(null);
+	};
+
+	const onLogout = () => {
+		dispatch(resetAccount());
+		handleClose();
+	};
+
+	const getNameLetter = () => {
+		try {
+			return user.profileObj.name[0];
+		} catch (e) {
+			return "";
+		}
+	};
+
+	return (
+		<ListItemIcon>
+			<Avatar className={classes.avatar} onClick={handleClick}>
+				{getNameLetter()}
+			</Avatar>
+			<Menu
+				id="simple-menu"
+				anchorEl={anchorEl}
+				keepMounted
+				open={Boolean(anchorEl)}
+				onClose={handleClose}
+				anchorOrigin="right"
+			>
+				<MenuItem onClick={handleClose}>Profile</MenuItem>
+				<MenuItem
+					onClick={() => {
+						if (window.gapi) {
+							const auth2 = window.gapi.auth2.getAuthInstance();
+							if (auth2 != null) {
+								auth2
+									.signOut()
+									.then(
+										auth2
+											.disconnect()
+											.then((e)=>{
+												onLogout()
+											})
+											.catch(e=>{
+												console.log(e)
+											})
+									);
+							}
+						}
+					}}
+				>
+					Logout
+				</MenuItem>
+			</Menu>
+		</ListItemIcon>
+	);
+}
 
 export default function MainDrawer({ onSelect = () => null }) {
 	const classes = useStyles();
+	const { user } = useSelector((state) => state.account);
 	const [open, setOpen] = React.useState(false);
 
 	const handleDrawer = () => {
@@ -119,11 +201,7 @@ export default function MainDrawer({ onSelect = () => null }) {
 					const Icon = iconMap[text];
 
 					return (
-						<ListItem
-							button
-							disabled
-							key={text}
-						>
+						<ListItem button disabled key={text}>
 							<ListItemIcon>
 								<Icon />
 							</ListItemIcon>
@@ -131,6 +209,14 @@ export default function MainDrawer({ onSelect = () => null }) {
 						</ListItem>
 					);
 				})}
+			</List>
+			<div className={classes.flexUp} />
+			<Divider />
+			<List>
+				<ListItem button key={"Account"}>
+					<AccouontItem user={user} />
+					<ListItemText primary={"Account"} />
+				</ListItem>
 			</List>
 		</Drawer>
 	);

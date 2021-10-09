@@ -41,7 +41,9 @@ const useStyles = makeStyles((theme) => ({
 		visibility: "hidden",
 	},
 	topContainer: {},
-	bottomContainer: {},
+	bottomContainer: {
+		paddingTop: 20
+	},
 }));
 
 const styles = {
@@ -70,6 +72,10 @@ function OnBoard() {
 	const classes = useStyles();
 	const dispatch = useDispatch();
 	const [ loaded, setLoaded ] = useState(false);
+
+	useState(()=>{
+		setTimeout(()=>setLoaded(true), 500)
+	}, [])
 
 	const responseGoogle = (response) => {
 		console.log(response)

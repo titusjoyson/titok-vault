@@ -73,18 +73,15 @@ function OnBoard() {
 	const dispatch = useDispatch();
 	const [ loaded, setLoaded ] = useState(false);
 
-	useState(()=>{
-		setTimeout(()=>setLoaded(true), 500)
-	}, [])
-
 	const responseGoogle = (response) => {
 		console.log(response)
 		console.log(response.profileObj);
 		dispatch(setAccount(response))
-		if(!loaded){
-			setLoaded(true)
-		}
 	};
+
+	const onLoadFinish = () => {
+		setTimeout(()=>setLoaded(true), 500)
+	}
 
 	return (
 		<React.Fragment>
@@ -114,6 +111,7 @@ function OnBoard() {
 							)}
 							onSuccess={responseGoogle}
 							onFailure={responseGoogle}
+							onAutoLoadFinished={onLoadFinish}
 							cookiePolicy={"single_host_origin"}
 							isSignedIn
 						/>

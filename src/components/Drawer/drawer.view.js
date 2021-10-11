@@ -22,6 +22,7 @@ import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import { resetAccount } from "../../redux/actions/account";
 import { AllTabs } from "../../com/const";
+import logo from "../../assets/logo_sm.png";
 
 const accountMenu = ["Account", "Logout"];
 
@@ -78,6 +79,9 @@ const useStyles = makeStyles((theme) => ({
 	flexUp: {
 		display: "flex",
 		flex: 1,
+	},
+	logo: {
+		height: 35,
 	},
 }));
 
@@ -197,6 +201,9 @@ export default function MainDrawer({ onSelect = () => null }) {
 			}}
 		>
 			<div className={classes.toolbar}>
+				{open && (
+					<img alt="timer" src={logo} className={classes.logo} />
+				)}
 				<IconButton onClick={handleDrawer}>
 					{!open ? <ChevronRightIcon /> : <ChevronLeftIcon />}
 				</IconButton>

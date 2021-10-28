@@ -16,7 +16,10 @@ class GoogleDrive {
     /**
      *  On load, called to load the auth2 library and API client library.
      */
-    handleClientLoad = (onLoginSuccess=()=>{}, onLoginFailed=()=>{}) => {
+    handleClientLoad = (
+        onLoginSuccess = () => {},
+        onLoginFailed = () => {}
+    ) => {
         this.onLoginSuccess = onLoginSuccess;
         this.onLoginFailed = onLoginFailed;
         window.gapi.load("client:auth2", this.initClient);
@@ -26,7 +29,7 @@ class GoogleDrive {
      *  On google Sign In button actions success.
      */
     onSuccess = (googleUser) => {
-        this.onLoginSuccess(googleUser.getBasicProfile())
+        this.onLoginSuccess(googleUser.getBasicProfile());
         console.log("Logged in as: " + googleUser.getBasicProfile().getName());
     };
 
@@ -35,7 +38,7 @@ class GoogleDrive {
      */
     onFailure = (error) => {
         console.log(error);
-        this.onLoginFailed(error)
+        this.onLoginFailed(error);
     };
 
     /**
@@ -92,7 +95,12 @@ class GoogleDrive {
         if (isSignedIn) {
             this.signoutButton.style.display = "block";
             this.listFiles();
-            this.onLoginSuccess(window.gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile())
+            this.onLoginSuccess(
+                window.gapi.auth2
+                    .getAuthInstance()
+                    .currentUser.get()
+                    .getBasicProfile()
+            );
         } else {
             // this.signoutButton.style.display = "none";
             this.renderButton();

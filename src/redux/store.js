@@ -5,17 +5,17 @@ import storage from "redux-persist/lib/storage";
 import rootReducer from "./reducers";
 
 const persistConfig = {
-	key: "root",
-	storage,
-	blacklist: ['account'],
+    key: "root",
+    storage,
+    blacklist: ["account"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = () => {
-	const store = createStore(persistedReducer, applyMiddleware(thunk));
-	const persistor = persistStore(store);
-	return { store, persistor };
+    const store = createStore(persistedReducer, applyMiddleware(thunk));
+    const persistor = persistStore(store);
+    return { store, persistor };
 };
 
 export default store;

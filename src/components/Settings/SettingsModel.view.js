@@ -14,61 +14,61 @@ import { DELETE_CONFIRMATION } from "../../redux/constants/settingsConst";
 import { setDeleteConfirmation } from "../../redux/actions/settings";
 
 const useStyles = makeStyles((theme) => ({
-	formControlLabel: {
-		...theme.formControlLabel,
-		fontSize: 14,
-	},
+    formControlLabel: {
+        ...theme.formControlLabel,
+        fontSize: 14,
+    },
 }));
 
 export default function BasicModal({ open, onClose = () => null }) {
-	const classes = useStyles();
-	const theme = useTheme();
-	const dispatch = useDispatch();
-	const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-	const settings = useSelector((state) => state.settings);
+    const classes = useStyles();
+    const theme = useTheme();
+    const dispatch = useDispatch();
+    const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+    const settings = useSelector((state) => state.settings);
 
-	const handleToggle = (value) => () => {
-		switch (value) {
-			case DELETE_CONFIRMATION:
-				dispatch(setDeleteConfirmation(!settings.DELETE_CONFIRMATION));
-				break;
-			default:
-				break;
-		}
-	};
+    const handleToggle = (value) => () => {
+        switch (value) {
+            case DELETE_CONFIRMATION:
+                dispatch(setDeleteConfirmation(!settings.DELETE_CONFIRMATION));
+                break;
+            default:
+                break;
+        }
+    };
 
-	return (
-		<Dialog
-			fullScreen={fullScreen}
-			open={open}
-			onClose={() => onClose(false)}
-			aria-labelledby="responsive-dialog-title"
-		>
-			<DialogTitle id="responsive-dialog-title">Settings</DialogTitle>
-			<Divider />
-			<DialogContent>
-				<List
-					sx={{
-						width: "100%",
-						bgcolor: "background.paper",
-					}}
-				>
-					<ListItem>
-						<ListItemText
-							id="switch-list-label-wifi"
-							primary="Show confirm on deleting from Note"
-						/>
-						<Switch
-							edge="end"
-							onChange={handleToggle(DELETE_CONFIRMATION)}
-							checked={settings.DELETE_CONFIRMATION}
-							inputProps={{
-								"aria-labelledby": "switch-list-label-wifi",
-							}}
-						/>
-					</ListItem>
-				</List>
-			</DialogContent>
-		</Dialog>
-	);
+    return (
+        <Dialog
+            fullScreen={fullScreen}
+            open={open}
+            onClose={() => onClose(false)}
+            aria-labelledby="responsive-dialog-title"
+        >
+            <DialogTitle id="responsive-dialog-title">Settings</DialogTitle>
+            <Divider />
+            <DialogContent>
+                <List
+                    sx={{
+                        width: "100%",
+                        bgcolor: "background.paper",
+                    }}
+                >
+                    <ListItem>
+                        <ListItemText
+                            id="switch-list-label-wifi"
+                            primary="Show confirm on deleting from Note"
+                        />
+                        <Switch
+                            edge="end"
+                            onChange={handleToggle(DELETE_CONFIRMATION)}
+                            checked={settings.DELETE_CONFIRMATION}
+                            inputProps={{
+                                "aria-labelledby": "switch-list-label-wifi",
+                            }}
+                        />
+                    </ListItem>
+                </List>
+            </DialogContent>
+        </Dialog>
+    );
 }

@@ -6,24 +6,24 @@ import { routLeaf } from "./const";
 
 function PublicRoute({ component: Component, ...rest }) {
     const { isAuthenticated } = useSelector((state) => state.account);
-    
-	return (
-		<Route
-			{...rest}
-			render={(props) =>
-				!isAuthenticated ? (
-					<Component {...props} />
-				) : (
-					<Redirect
-						to={{
-							pathname: routLeaf.APP,
-							state: { from: props.location },
-						}}
-					/>
-				)
-			}
-		/>
-	);
+
+    return (
+        <Route
+            {...rest}
+            render={(props) =>
+                !isAuthenticated ? (
+                    <Component {...props} />
+                ) : (
+                    <Redirect
+                        to={{
+                            pathname: routLeaf.APP,
+                            state: { from: props.location },
+                        }}
+                    />
+                )
+            }
+        />
+    );
 }
 
 export default PublicRoute;

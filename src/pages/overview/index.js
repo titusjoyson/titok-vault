@@ -1,3 +1,3 @@
-import Overview from './overview.view';
+import Overview from "./overview.view";
 
 export default Overview;

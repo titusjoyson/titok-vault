@@ -12,102 +12,102 @@ import db from "../../models/db";
 import { AllTabs } from "../../com/const";
 
 const useStyles = makeStyles((theme) => ({
-	root: {
-		backgroundColor: theme.palette.background.paper,
-		width: 250,
-	},
-	listWrapper: {
-		paddingTop: theme.spacing(0.5),
-		paddingBottom: theme.spacing(1),
-	},
+    root: {
+        backgroundColor: theme.palette.background.paper,
+        width: 250,
+    },
+    listWrapper: {
+        paddingTop: theme.spacing(0.5),
+        paddingBottom: theme.spacing(1),
+    },
 }));
 
 export default function ItemList({ onSelect = () => null }) {
-	const [notes, setNotes] = useState([]);
-	const [updateId, setUpdateId] = useState([]);
-	const [searchString, setSearchString] = useState("");
-	const size = useWindowSize();
-	const classes = useStyles();
-	const { selectedNoteId, activeMainTab } = useSelector((state) => state.app);
+    const [notes, setNotes] = useState([]);
+    const [updateId, setUpdateId] = useState([]);
+    const [searchString, setSearchString] = useState("");
+    const size = useWindowSize();
+    const classes = useStyles();
+    const { selectedNoteId, activeMainTab } = useSelector((state) => state.app);
 
-	const updateAllNotes = (activeMainTab) => {
-		let getNotesFunction = "getAllNotes";
-		if (activeMainTab === AllTabs.TRASH) {
-			getNotesFunction = "getAllDeletedNotes";
-		}
-		db[getNotesFunction]().then((notes) => {
-			let allNotes = [];
-			notes
-				.each((note) => {
-					allNotes.push(note);
-				})
-				.then(() => {
-					setNotes(allNotes);
-				})
-				.catch((e) => {
-					setNotes([]);
-					console.error(e);
-				});
-		});
-	};
+    const updateAllNotes = (activeMainTab) => {
+        let getNotesFunction = "getAllNotes";
+        if (activeMainTab === AllTabs.TRASH) {
+            getNotesFunction = "getAllDeletedNotes";
+        }
+        db[getNotesFunction]().then((notes) => {
+            let allNotes = [];
+            notes
+                .each((note) => {
+                    allNotes.push(note);
+                })
+                .then(() => {
+                    setNotes(allNotes);
+                })
+                .catch((e) => {
+                    setNotes([]);
+                    console.error(e);
+                });
+        });
+    };
 
-	useLiveQuery(() => {
-		db.notes.hook("creating", (primKey, obj, transaction) =>
-			setUpdateId(uuidv4())
-		);
+    useLiveQuery(() => {
+        db.notes.hook("creating", (primKey, obj, transaction) =>
+            setUpdateId(uuidv4())
+        );
 
-		db.notes.hook("updating", (modifications, primKey, obj, transaction) =>
-			setUpdateId(uuidv4())
-		);
+        db.notes.hook("updating", (modifications, primKey, obj, transaction) =>
+            setUpdateId(uuidv4())
+        );
 
-		db.notes.hook("deleting", (primKey, obj, transaction) =>
-			setUpdateId(uuidv4())
-		);
-	}, []);
+        db.notes.hook("deleting", (primKey, obj, transaction) =>
+            setUpdateId(uuidv4())
+        );
+    }, []);
 
-	useEffect(() => {
-		updateAllNotes(activeMainTab);
-	}, [activeMainTab, updateId]);
+    useEffect(() => {
+        updateAllNotes(activeMainTab);
+    }, [activeMainTab, updateId]);
 
-	if (!size.height) return <></>;
+    if (!size.height) return <></>;
 
-	const renderRow = (props) => {
-		const { index, style } = props;
-		const note = notes[index];
+    const renderRow = (props) => {
+        const { index, style } = props;
+        const note = notes[index];
 
-		return (
-			<ListItem
-				button
-				selected={selectedNoteId === note.id}
-				style={style}
-				key={index}
-				onClick={() => onSelect(note.id)}
-			>
-				<ListItemText primary={`${note.title}`} />
-			</ListItem>
-		);
-	};
+        return (
+            <ListItem
+                button
+                selected={selectedNoteId === note.id}
+                style={style}
+                key={index}
+                onClick={() => onSelect(note.id)}
+            >
+                <ListItemText primary={`${note.title}`} />
+            </ListItem>
+        );
+    };
 
-	let displayNotes = [...notes];
-	if (searchString) {
-		displayNotes = displayNotes.filter((x) =>
-			x.title.toLowerCase().includes(searchString.toLowerCase())
-		);
-	}
+    let displayNotes = [...notes];
+    if (searchString) {
+        displayNotes = displayNotes.filter((x) =>
+            x.title.toLowerCase().includes(searchString.toLowerCase())
+        );
+    }
 
-	return (
-		<div className={classes.root}>
-			<ItemSearch onChange={(value) => setSearchString(value)} />
-			<div className={classes.listWrapper}>
-				<FixedSizeList
-					height={size.height - 65}
-					width={250}
-					itemSize={46}
-					itemCount={displayNotes.length}
-				>
-					{renderRow}
-				</FixedSizeList>
-			</div>
-		</div>
-	);
+    return (
+        <div className={classes.root}>
+            <ItemSearch onChange={(value) => setSearchString(value)} />
+            <div className={classes.listWrapper}>
+                <FixedSizeList
+                    height={size.height - 65}
+                    width={250}
+                    itemSize={46}
+                    itemCount={displayNotes.length}
+                >
+                    {renderRow}
+                </FixedSizeList>
+            </div>
+        </div>
+    );
 }

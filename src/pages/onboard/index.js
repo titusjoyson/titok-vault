@@ -1,3 +1,3 @@
-import OnBoard from './onboard.view';
+import OnBoard from "./onboard.view";
 
 export default OnBoard;

@@ -1,4 +1,5 @@
 # Titok Vault
+
 <img alt="Logo" src="public/icon.png" width="120" />
 
 WIP: A simple app for Managing and accessing secrets.
@@ -10,3 +11,8 @@ Contains no ads or unnecessary permissions. It is fully opensource and open for 
 <div style="display:flex;">
 <img alt="App image" src="src/assets/Screenshot.png" width="100%">
 </div>
+
+## code format
+```
+yarn prettier --write .
+```

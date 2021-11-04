@@ -21,11 +21,7 @@ function Routs() {
                     default
                     component={OnBoard}
                 />
-                <PrivateRoute
-                    path={routLeaf.APP}
-                    default
-                    component={Overview}
-                />
+                <PrivateRoute path={routLeaf.APP} component={Overview} />
                 <Route path={routLeaf.ROOT}>
                     <Redirect to={routLeaf.ONBOARD} />
                 </Route>

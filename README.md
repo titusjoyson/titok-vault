@@ -13,6 +13,7 @@ Contains no ads or unnecessary permissions. It is fully opensource and open for 
 </div>
 
 ## code format
+
 ```
 yarn prettier --write .
 ```

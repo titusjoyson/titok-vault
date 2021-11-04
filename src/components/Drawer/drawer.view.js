@@ -23,6 +23,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { resetAccount } from "../../redux/actions/account";
 import { AllTabs } from "../../com/const";
 import logo from "../../assets/logo_sm.png";
+import authTypes from "../../const/auth";
 
 const accountMenu = ["Account", "Logout"];
 
@@ -147,7 +148,7 @@ export default function MainDrawer({ onSelect = () => null }) {
     };
 
     const onLogoutClick = () => {
-        if (window.gapi) {
+        if (authTypes.GOOGLE === user.source && window.gapi) {
             const auth2 = window.gapi.auth2.getAuthInstance();
             if (auth2 != null) {
                 auth2.signOut().then(
@@ -161,6 +162,9 @@ export default function MainDrawer({ onSelect = () => null }) {
                         })
                 );
             }
+        } else if (authTypes.MICROSOFT === user.source && user.instance) {
+            logout();
+            user.instance.logout();
         }
     };
 

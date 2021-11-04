@@ -2,18 +2,21 @@ import React, { useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Box from "@material-ui/core/Box";
+import { GoogleLoginButton } from "react-social-login-buttons";
 import GoogleButton from "react-google-button";
+import MicrosoftLogin from "react-microsoft-login";
 import { GoogleLogin } from "../../auth/google";
 import logo from "../../assets/logo.png";
 import TermsAndCondition from "./TAndC.view";
 // redux
 import { useSelector, useDispatch } from "react-redux";
 import { setAccount } from "../../redux/actions/account";
-import { checkFileExists, crateFile } from "../../utils/sync";
-// db
-import db from "../../models/db";
-
+// config
+import config from "../../config";
+import authTypes from "../../const/auth";
+// style
 import "./overview.styles.css";
+import { useWindowSize } from "../../utils/hooks";
 
 const useStyles = makeStyles((theme) => ({
     h4: {
@@ -74,24 +77,43 @@ function OnBoard() {
     const dispatch = useDispatch();
     const [loaded, setLoaded] = useState(false);
 
-    const responseGoogle = (response) => {
-        console.log(response);
-        if (response.profileObj && response.profileObj.googleId) {
-            checkFileExists().then((exists) => {
-                alert(exists);
-            });
+    const dispatchAccount = (account) => {
+        dispatch(setAccount(account));
+    };
 
-            db.exportLocalDb().then((blob) => {
-                crateFile(blob);
-                console.log(blob);
-            });
-            // dispatch(setAccount(response));
-        } else {
+    const responseGoogle = (response) => {
+        if (response.profileObj && response.profileObj.googleId) {
+            const { email, givenName } = response.profileObj;
+            const account = {
+                name: givenName,
+                userName: email,
+                source: authTypes.GOOGLE,
+            };
+            console.log(account);
+            dispatchAccount(account);
         }
     };
 
     const onLoadFinish = () => {
         setTimeout(() => setLoaded(true), 500);
+    };
+
+    const authHandler = (err, data, msal) => {
+        if (!err && data) {
+            console.log(msal);
+        }
+        if (err === null) {
+            window.msal = msal;
+            const { name, userName } = data.account;
+            const account = {
+                name,
+                userName,
+                source: authTypes.MICROSOFT,
+                instance: msal,
+            };
+            console.log(account);
+            dispatchAccount(account);
+        }
     };
 
     return (
@@ -114,10 +136,11 @@ function OnBoard() {
                         }`}
                     >
                         <GoogleLogin
-                            clientId="700482654119-f58qc1g4aokrigjnn4sjb485hv425emn.apps.googleusercontent.com"
+                            clientId={config.GOOGLE_CLIENT_ID}
                             buttonText="Continue with Google"
                             render={(renderProps) => (
                                 <GoogleButton
+                                    className="ds-google-login-button"
                                     onClick={renderProps.onClick}
                                     disabled={renderProps.disabled}
                                 >
@@ -130,7 +153,17 @@ function OnBoard() {
                             cookiePolicy={"single_host_origin"}
                             isSignedIn
                         />
-
+                        <div style={{ height: 20 }} />
+                        <MicrosoftLogin
+                            clientId={config.AZURE_CLIENT_ID}
+                            authCallback={authHandler}
+                        />
+                    </div>
+                    <div
+                        className={`${classes.bottomContainer} ${
+                            loaded ? "" : classes.hide
+                        }`}
+                    >
                         <Box sx={styles.bottomBox}>
                             <TermsAndCondition />
                         </Box>

@@ -12,7 +12,7 @@ const accountReducer = (state = initialState, action) => {
             return {
                 ...state,
                 user: action.payload,
-                isAuthenticated: action.payload.accessToken ? true : false,
+                isAuthenticated: action.payload.userName ? true : false,
             };
         case RESET_ACCOUNT:
             return { ...state, user: {}, isAuthenticated: false };

@@ -98,64 +98,59 @@ const useGoogleLogin = ({
                 }
 
                 window.gapi.load("client:auth2", () => {
-                    window.gapi.client.load(
-                        "drive",
-                        "v2",
-                        () => {
-                            const GoogleAuth =
-                                window.gapi.auth2.getAuthInstance();
-                            if (!GoogleAuth) {
-                                window.gapi.auth2.init(params).then(
-                                    (res) => {
-                                        if (!unmounted) {
-                                            setLoaded(true);
-                                            const signedIn =
-                                                isSignedIn &&
-                                                res.isSignedIn.get();
-                                            onAutoLoadFinished(signedIn);
-                                            if (signedIn) {
-                                                handleSigninSuccess(
-                                                    res.currentUser.get()
-                                                );
-                                            }
-                                        }
-                                    },
-                                    (err) => {
-                                        setLoaded(true);
-                                        onAutoLoadFinished(false);
-                                        onLoadFailure(err);
+                    // window.gapi.client.load(
+                    //     "drive",
+                    //     "v2",
+                    //     () => {
+                    const GoogleAuth = window.gapi.auth2.getAuthInstance();
+                    if (!GoogleAuth) {
+                        window.gapi.auth2.init(params).then(
+                            (res) => {
+                                if (!unmounted) {
+                                    setLoaded(true);
+                                    const signedIn =
+                                        isSignedIn && res.isSignedIn.get();
+                                    onAutoLoadFinished(signedIn);
+                                    if (signedIn) {
+                                        handleSigninSuccess(
+                                            res.currentUser.get()
+                                        );
                                     }
-                                );
-                            } else {
-                                GoogleAuth.then(
-                                    () => {
-                                        if (unmounted) {
-                                            return;
-                                        }
-                                        if (
-                                            isSignedIn &&
-                                            GoogleAuth.isSignedIn.get()
-                                        ) {
-                                            setLoaded(true);
-                                            onAutoLoadFinished(true);
-                                            handleSigninSuccess(
-                                                GoogleAuth.currentUser.get()
-                                            );
-                                        } else {
-                                            setLoaded(true);
-                                            onAutoLoadFinished(false);
-                                        }
-                                    },
-                                    (err) => {
-                                        onFailure(err);
-                                    }
-                                );
+                                }
+                            },
+                            (err) => {
+                                setLoaded(true);
+                                onAutoLoadFinished(false);
+                                onLoadFailure(err);
                             }
-                        },
-                        (err) => {
-                            console.error(err);
-                        }
-                    );
+                        );
+                    } else {
+                        GoogleAuth.then(
+                            () => {
+                                if (unmounted) {
+                                    return;
+                                }
+                                if (isSignedIn && GoogleAuth.isSignedIn.get()) {
+                                    setLoaded(true);
+                                    onAutoLoadFinished(true);
+                                    handleSigninSuccess(
+                                        GoogleAuth.currentUser.get()
+                                    );
+                                } else {
+                                    setLoaded(true);
+                                    onAutoLoadFinished(false);
+                                }
+                            },
+                            (err) => {
+                                onFailure(err);
+                            }
+                        );
+                    }
+                    //     },
+                    //     (err) => {
+                    //         console.error(err);
+                    //     }
+                    // // );
                 });
             },
             (err) => {

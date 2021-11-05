@@ -1,11 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Box from "@material-ui/core/Box";
-import { GoogleLoginButton } from "react-social-login-buttons";
 import GoogleButton from "react-google-button";
-import MicrosoftLogin from "react-microsoft-login";
-import { GoogleLogin } from "../../auth/google";
 import logo from "../../assets/logo.png";
 import TermsAndCondition from "./TAndC.view";
 // redux
@@ -75,7 +72,7 @@ const styles = {
 function OnBoard() {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const [loaded, setLoaded] = useState(false);
+    const [loaded, setLoaded] = useState(true);
 
     const dispatchAccount = (account) => {
         dispatch(setAccount(account));
@@ -116,6 +113,8 @@ function OnBoard() {
         }
     };
 
+    const onLoginClick = () => {};
+
     return (
         <React.Fragment>
             <CssBaseline />
@@ -135,29 +134,14 @@ function OnBoard() {
                             loaded ? "" : classes.hide
                         }`}
                     >
-                        <GoogleLogin
-                            clientId={config.GOOGLE_CLIENT_ID}
-                            buttonText="Continue with Google"
-                            render={(renderProps) => (
-                                <GoogleButton
-                                    className="ds-google-login-button"
-                                    onClick={renderProps.onClick}
-                                    disabled={renderProps.disabled}
-                                >
-                                    Continue with Google
-                                </GoogleButton>
-                            )}
-                            onSuccess={responseGoogle}
-                            onFailure={responseGoogle}
-                            onAutoLoadFinished={onLoadFinish}
-                            cookiePolicy={"single_host_origin"}
-                            isSignedIn
-                        />
+                        <GoogleButton
+                            className="ds-google-login-button"
+                            onClick={onLoginClick}
+                            // disabled={renderProps.disabled}
+                        >
+                            Continue with Google
+                        </GoogleButton>
                         <div style={{ height: 20 }} />
-                        <MicrosoftLogin
-                            clientId={config.AZURE_CLIENT_ID}
-                            authCallback={authHandler}
-                        />
                     </div>
                     <div
                         className={`${classes.bottomContainer} ${
